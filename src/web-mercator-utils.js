@@ -10,6 +10,7 @@ import assert from './assert';
 // CONSTANTS
 const PI = Math.PI;
 const PI_4 = PI / 4;
+const PI_2 = PI / 2;
 const DEGREES_TO_RADIANS = PI / 180;
 const RADIANS_TO_DEGREES = 180 / PI;
 const TILE_SIZE = 512;
@@ -46,7 +47,7 @@ export function lngLatToWorld([lng, lat], scale) {
   const lambda2 = lng * DEGREES_TO_RADIANS;
   const phi2 = lat * DEGREES_TO_RADIANS;
   const x = scale * (lambda2 + PI) / (2 * PI);
-  const y = scale * (PI - Math.log(Math.tan(PI_4 + phi2 * 0.5))) / (2 * PI);
+  const y = scale * (PI_2 - phi2) / (2 * PI);
   return [x, y];
 }
 
@@ -62,7 +63,7 @@ export function lngLatToWorld([lng, lat], scale) {
 export function worldToLngLat([x, y], scale) {
   scale *= TILE_SIZE;
   const lambda2 = (x / scale) * (2 * PI) - PI;
-  const phi2 = 2 * (Math.atan(Math.exp(PI - (y / scale) * (2 * PI))) - PI_4);
+  const phi2 = PI_2 - (y / scale) * (2 * PI);
   return [lambda2 * RADIANS_TO_DEGREES, phi2 * RADIANS_TO_DEGREES];
 }
 
