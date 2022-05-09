@@ -1,5 +1,7 @@
 # Web Mercator Utility Functions
 
+> viewport-mercator-project has been moved to https://math.gl/. This repository is archived and read-only.
+
 ### `lngLatToWorld(lngLat, scale)`
 
 Project a coordinate on sphere onto the Web Mercator coordinate system at a given zoom level.
@@ -159,11 +161,18 @@ Parameters:
 - `opts.width` (Number, required)
 - `opts.height` (Number, required)
 - `opts.bounds` (Array, required) - opposite corners specified as `[[lon, lat], [lon, lat]]`
-- `opts.padding` (Number, optional) - the amount of padding in pixels to add to the given bounds. Default `0`.
-- `opts.offset` (Array, optional) - the center of the given bounds relative to the map's center, `[x, y]` measured in pixels.
+- `opts.minExtent` (Number, optional) - If supplied, the bounds used to calculate the new map settings will be expanded if the delta width or height of the supplied `bounds` is smaller than this value.
+- `opts.maxZoom`=`24` (Number, optional) - The returned zoom value will be capped to this value. Avoids returning infinite `zoom` when the supplied `bounds` have zero width or height deltas.
+- `opts.padding`=`0` (Number, optional) - the amount of padding in pixels to add to the given bounds.
+- `opts.offset`=`[0,0]` (Array, optional) - the center of the given bounds relative to the map's center, `[x, y]` measured in pixels.
 
 Returns:
 - `{longitude, latitude, zoom}`
+
+Notes:
+* `minExtent` - Note that this value represents delta latitude/longitudes and value of `0.01` would roughly represent 1km.
+
+
 
 ### `normalizeViewportProps(viewport)`
 
@@ -181,7 +190,7 @@ Parameters:
 Returns:
 - `viewport` - normalized `{width, height, longitude, latitude, zoom, pitch, bearing}`
 
-### `flyToViewport(startProps, endProps, t)`
+### `flyToViewport(startProps, endProps, t, opts)`
 
 While flying from one viewport to another, returns in-transition viewport props at a given time. This util function implements the algorithm described in “Smooth and efficient zooming and panning.” by Jarke J. van Wijk and Wim A.A. Nuij.
 
@@ -197,7 +206,32 @@ Parameters:
 - `endProps.latitude` (Number, required)
 - `endProps.zoom` (Number, required)
 - `t` (Number) - a time factor between 0 and 1. `0` indicates the start of the transition, `1` indicates the end of the transition.
+- `opts` (Object, optional)
+- `opts.curve` (Number, optional, default: 1.414) - The zooming "curve" that will occur along the flight path, .
 
 Returns:
 - `{longitude, latitude, zoom}`
 
+### `getFlyToDuration(startProps, endProps, opts)`
+
+Returns time in milliseconds, that is required perform transition from one viewport to another. Time returned is proportional to the distance we are transitioning to. This util function implements mapbox-gl-js (https://docs.mapbox.com/mapbox-gl-js/api/#map#flyto) duration calculation.
+
+Parameters:
+- `startProps` (Object) - viewport to fly from
+- `startProps.width` (Number, required)
+- `startProps.height` (Number, required)
+- `startProps.longitude` (Number, required)
+- `startProps.latitude` (Number, required)
+- `startProps.zoom` (Number, required)
+- `endProps` (Object) - viewport to fly from
+- `endProps.longitude` (Number, required)
+- `endProps.latitude` (Number, required)
+- `endProps.zoom` (Number, required)
+- `opts` (Object, optional) - optional parameters that effect duration calculation.
+- `opts.curve` (Number, optional, default: 1.414) - The zooming "curve" that will occur along the flight path.
+- `opts.speed` (Number, optional, default: 1.2) - The average speed of the animation defined in relation to `options.curve`, it linearly affects the duration, higher speed returns smaller durations and vice versa.
+- `opts.screenSpeed` (Number, optional) - The average speed of the animation measured in screenfuls per second. Similar to `opts.speed` it linearly affects the duration,  when specified `opts.speed` is ignored.
+- `opts.maxDuration` (Number, optional) - Maximum duration in milliseconds, if calculated duration exceeds this value, `0` is returned.
+
+Returns:
+- `duration` Number, in milliseconds.
