@@ -8,12 +8,52 @@ const FITBOUNDS_TEST_CASES = [
     {
       width: 100,
       height: 100,
+      // southwest bound first
       bounds: [[-73.9876, 40.7661], [-72.9876, 41.7661]]
     },
     {
       longitude: -73.48759999999997,
       latitude: 41.26801443944763,
       zoom: 5.723804361273887
+    }
+  ],
+  [
+    {
+      width: 100,
+      height: 100,
+      // northeast bound first
+      bounds: [[-72.9876, 41.7661], [-73.9876, 40.7661]]
+    },
+    {
+      longitude: -73.48759999999997,
+      latitude: 41.26801443944763,
+      zoom: 5.723804361273887
+    }
+  ],
+  [
+    {
+      width: 100,
+      height: 100,
+      bounds: [[-73, 10], [-73, 10]],
+      maxZoom: 22
+    },
+    {
+      longitude: -73,
+      latitude: 10,
+      zoom: 22
+    }
+  ],
+  [
+    {
+      width: 100,
+      height: 100,
+      bounds: [[-73, 10], [-73, 10]],
+      minExtent: 0.01
+    },
+    {
+      longitude: -73,
+      latitude: 10,
+      zoom: 13.28771238
     }
   ],
   [
@@ -81,5 +121,33 @@ test('WebMercatorViewport.fitBounds', (t) => {
     t.equals(toLowPrecision(result.zoom), toLowPrecision(expected.zoom),
       'get correct zoom');
   }
+  t.end();
+});
+
+test('fitBounds#degenerate', (t) => {
+  const OPTIONS = {
+    height: 100,
+    width: 100,
+    bearing: 0,
+    pitch: 0,
+    zoom: 2
+  };
+
+  const viewport = new WebMercatorViewport(OPTIONS);
+  t.doesNotThrow(
+    () => viewport.fitBounds([[-70, 10], [-70, 10]]),
+    'degenerate bounds do not throw by default'
+  );
+  t.throws(
+    () => viewport.fitBounds([[-70, 10], [-70, 10]], {maxZoom: Infinity}),
+    'degenerate bounds throw if maxZoom removed'
+  );
+  t.doesNotThrow(
+    () => viewport.fitBounds([[-70, 10], [-70, 10]], {minExtent: 0.01, maxZoom: Infinity}),
+    'degenerate bounds does not throw if maxZoom removed and minExtents added'
+  );
+
+  t.ok(viewport instanceof WebMercatorViewport, 'get viewport');
+
   t.end();
 });
