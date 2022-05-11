@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 export PATH=$PATH:node_modules/.bin
 
 BABEL_ENV=es6 babel src --out-dir dist/es6 --source-maps --ignore 'node_modules/' &&
