@@ -1,14 +1,14 @@
 {
-  "name": "@cgcs2000/viewport-cgcs2000-project",
+  "name": "@gongdear/viewport-cgcs2000-project",
   "version": "6.2.2a",
   "description": "Utilities for perspective-enabled Web Mercator projections",
   "author": "Uber Technologies, Inc.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cgcs2000/viewport-cgcs2000-project.git"
+    "url": "git+https://github.com/gongdear/viewport-cgcs2000-project.git"
   },
-  "homepage": "https://github.com/cgcs2000/viewport-cgcs2000-project#readme",
+  "homepage": "https://github.com/gongdear/viewport-cgcs2000-project#readme",
   "main": "dist/es5/index.js",
   "module": "dist/esm/index.js",
   "esnext": "dist/es6/index.js",
