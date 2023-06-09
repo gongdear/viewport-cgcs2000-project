@@ -1,6 +1,6 @@
 {
   "name": "@gongdear/viewport-cgcs2000-project",
-  "version": "6.2.2a",
+  "version": "6.2.3",
   "description": "Utilities for perspective-enabled Web Mercator projections",
   "author": "Uber Technologies, Inc.",
   "license": "MIT",
